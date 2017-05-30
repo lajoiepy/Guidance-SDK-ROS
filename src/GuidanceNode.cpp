@@ -82,9 +82,6 @@ int my_callback(int data_type, int data_len, char *content)
 
 		if ( data->m_greyscale_image_left[CAMERA_ID] ){
 			memcpy(g_greyscale_image_left.data, data->m_greyscale_image_left[CAMERA_ID], IMAGE_SIZE);
-            if (show_images) {
-			    imshow("left",  g_greyscale_image_left);
-            }
 			// publish left greyscale image
 			cv_bridge::CvImage left_8;
 			g_greyscale_image_left.copyTo(left_8.image);
@@ -95,9 +92,6 @@ int my_callback(int data_type, int data_len, char *content)
 		}
 		if ( data->m_greyscale_image_right[CAMERA_ID] ){
 			memcpy(g_greyscale_image_right.data, data->m_greyscale_image_right[CAMERA_ID], IMAGE_SIZE);
-            if (show_images) {
-			    imshow("right", g_greyscale_image_right);
-            }
 			// publish right greyscale image
 			cv_bridge::CvImage right_8;
 			g_greyscale_image_right.copyTo(right_8.image);
@@ -109,9 +103,6 @@ int my_callback(int data_type, int data_len, char *content)
 		if ( data->m_depth_image[CAMERA_ID] ){
 			memcpy(g_depth.data, data->m_depth_image[CAMERA_ID], IMAGE_SIZE * 2);
 			g_depth.convertTo(depth8, CV_8UC1);
-            if (show_images) {
-			    imshow("depth", depth8);
-            }
 			//publish depth image
 			cv_bridge::CvImage depth_16;
 			g_depth.copyTo(depth_16.image);
@@ -280,11 +271,12 @@ int main(int argc, char** argv)
 	RETURN_IF_ERR(err_code);
     err_code = select_depth_image(CAMERA_ID);
 	RETURN_IF_ERR(err_code);
-    select_imu();
-    select_ultrasonic();
-    select_obstacle_distance();
-    select_velocity();
+    // select_imu();
+    // select_ultrasonic();
+    // select_obstacle_distance();
+    // select_velocity();
     /* start data transfer */
+
     err_code = set_sdk_event_handler(my_callback);
     RETURN_IF_ERR(err_code);
     err_code = start_transfer();
@@ -327,6 +319,7 @@ int main(int argc, char** argv)
 				key = 0;
 			}
 			else if (key == 'q' || key == 'w' || key == 'd' || key == 'x' || key == 'a' || key == 's'){// switch image direction
+				
 				err_code = stop_transfer();
 				RETURN_IF_ERR(err_code);
 				reset_config();
@@ -338,14 +331,15 @@ int main(int argc, char** argv)
 				if (key == 'a') CAMERA_ID = e_vbus4;	   
 				if (key == 's') CAMERA_ID = e_vbus5;
 
+
 				select_greyscale_image(CAMERA_ID, true);
 				select_greyscale_image(CAMERA_ID, false);
 				select_depth_image(CAMERA_ID);
 
-                select_imu();
-                select_ultrasonic();
-                select_obstacle_distance();
-                select_velocity();
+                // select_imu();
+                // select_ultrasonic();
+                // select_obstacle_distance();
+                // select_velocity();
 
 				err_code = start_transfer();
 				RETURN_IF_ERR(err_code);
